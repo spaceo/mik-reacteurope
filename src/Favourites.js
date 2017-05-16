@@ -1,4 +1,5 @@
 import React from 'react';
+import update from 'react-addons-update';
 import { compose, withState, withHandlers, renameProp } from 'recompose';
 
 const Favourites = ({
@@ -31,7 +32,23 @@ const Favourites = ({
 );
 
 const enhance = compose(
-  // TODO add your higher order components here
+  renameProp('imageUrl', 'thumbnailUrl'),
+  withState('favourites', 'setFavourites', []),
+  withState('favouriteText', 'setFavouriteText', ''),
+  withState('name', 'setName', props => props.name),
+  withHandlers({
+    updateFavouriteText: props => event => {
+      props.setFavouriteText(event.target.value)
+    },
+    addListEntry: props => event => {
+      props.setFavourites(update(props.favourites, {$push: [props.favouriteText]}));
+      props.setFavouriteText('');
+      event.preventDefault();
+    },
+    updateName: props => event => {
+      props.setName(event.target.value)
+    },
+  }),
 );
 
 export default enhance(Favourites);
