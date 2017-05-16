@@ -1,5 +1,8 @@
 import React from 'react';
 
-export default ({ children }) => (
-	// TODO: Build title component
-)
+export default ({ selected, children }) => {
+  return (
+  	// TODO: Build title component
+    <div><button>{children}</button></div>
+  )
+}
