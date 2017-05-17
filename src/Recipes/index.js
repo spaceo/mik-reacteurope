@@ -10,7 +10,9 @@ const Recipes = ({
   setVegetarianFilter,
   ingredientFilter,
   setIngredientFilter
-}) => (
+}) => {
+  console.log(vegetarianFilter);
+  return (
   <div>
     <h3>Vegetarian Filter</h3>
     <div>
@@ -66,12 +68,35 @@ const Recipes = ({
       </div>
     ))}
   </div>
-);
+)};
 
+const RecipeQuery = gql`query RecipeQuery($vegetarian: Boolean, $ingredient: String){
+  recipes(vegetarian: $vegetarian, ingredient: $ingredient){
+    _id,
+    title,
+    vegetarian,
+    preparation,
+    ingredients{
+      _id,
+      name
+    }
+  },
+  ingredients{
+    _id,
+    name
+  }
+}`;
 const enhance = compose(
-  withState('vegetarianFilter', 'setVegetarianFilter', null),
-  withState('ingredientFilter', 'setIngredientFilter', null),
-  // TODO fill in your graphql higher order component here
+  withState('vegetarianFilter', 'setVegetarianFilter', ''),
+  withState('ingredientFilter', 'setIngredientFilter', ''),
+  graphql(RecipeQuery, {
+    options: props => ({
+      variables: {
+        vegetarian: props.vegetarianFilter,
+        ingredient: props.ingredientFilter
+      }
+    })
+  }),
   withLoading
 );
 
